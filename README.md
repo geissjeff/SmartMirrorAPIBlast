@@ -1,5 +1,5 @@
 # SmartMirrorAPIBlast
-
+This githubs holds all code for the Raspberry Pi end of Smart Mirror
 ## Goals
 - [ ] Integrate Weather API
 - [ ] Integrate World Clock API
