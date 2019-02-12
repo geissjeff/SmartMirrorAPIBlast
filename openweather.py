@@ -1,5 +1,4 @@
 import requests
-from pprint import pprint
 
 API_key = "a0e157b3a341bfe1935ccc52588ae003"
 
