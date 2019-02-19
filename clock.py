@@ -8,7 +8,9 @@ formatType = "json"
 
 by = "zone"
 
+
 zone = "America/Indiana/Indianapolis"
+
 
 final_url = base_url + "key=" + API_KEY + "&format=" + formatType + "&by=" + by + "&zone=" + zone
 
