@@ -76,4 +76,8 @@ if __name__ == '__main__':
 
 
 
-#Refresh token: 1/HOYF-y6yl2FOSkxME3m0POyp0mmvEbKBc5H_1DMCGxU
+#Client ID: 
+#671143266543-dnper0a5b777rkid7gh655od6130tj60.apps.googleusercontent.com
+#Secret:
+#2AazhFQju-1X8mjRqunuluv7
+
