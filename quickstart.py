@@ -32,23 +32,13 @@ def main():
         else:
             flow = InstalledAppFlow.from_client_secrets_file(
                 'credentials.json', SCOPES)
-            #creds = flow.run_local_server()
-            creds = client.GoogleCredentials(
-                access_token = None,
-                client_id = CLIENT_ID, 
-                client_secret = CLIENT_SECRET, 
-                refresh_token = REFRESH_TOKEN,
-                token_expiry = None,
-                token_uri = GOOGLE_TOKEN_URI,
-                user_agent = None,
-                revoke_uri = GOOGLE_REVOKE_URI)
-            creds.refresh(httplib2.Http())
-            http = creds.authorize(httplib2.Http())
+            creds = flow.run_local_server()
+
             
 
         # Save the credentials for the next run
-        #with open('token.pickle', 'wb') as token:
-        #    pickle.dump(creds, token)
+        with open('token.pickle', 'wb') as token:
+            pickle.dump(creds, token)
 
     service = build('calendar', 'v3', credentials=creds)
 
