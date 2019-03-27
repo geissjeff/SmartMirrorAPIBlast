@@ -1,3 +1,4 @@
+#!/usr/bin/env python3.4
 import requests
 
 base_url = "http://api.timezonedb.com/v2.1/get-time-zone?"

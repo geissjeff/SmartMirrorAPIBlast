@@ -1,3 +1,4 @@
+#!/usr/bin/env python3.4
 from __future__ import print_function
 from google_auth_oauthlib.flow import InstalledAppFlow
 from apiclient.discovery import build
@@ -31,10 +32,10 @@ def initial():
 		credentials = flow.run_console()
 		access_token = credentials.token
 		refresh_token = credentials.refresh_token
-		print("Access token: %s" % access_token) 
+		#print("Access token: %s" % access_token) 
 		with open('token.pickle', 'wb') as token:
 		    pickle.dump(credentials, token)
-	print("Access Token: %s" % credentials.token)
+	#print("Access Token: %s" % credentials.token)
 	service = build('calendar', 'v3', credentials = credentials)
 	now = datetime.datetime.utcnow().isoformat() + 'Z' # 'Z' indicates UTC time
 	print('Getting the upcoming 10 events')

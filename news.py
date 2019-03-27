@@ -1,3 +1,4 @@
+#!/usr/bin/env python3.4
 import requests
 
 base_url = "https://newsapi.org/v2/top-headlines?"

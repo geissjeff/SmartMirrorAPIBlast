@@ -1,10 +1,11 @@
+#!/usr/bin/env python3.4
 import requests
 
 API_key = "a0e157b3a341bfe1935ccc52588ae003"
 
 base_url = "http://api.openweathermap.org/data/2.5/weather?"
 
-zip_code = input("Enter a Zip code: ")
+zip_code = "47906"				#input("Enter a Zip code: ")
 
 Final_zip_url = base_url + "appid=" + API_key + "&zip=" + zip_code
 
