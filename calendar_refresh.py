@@ -49,44 +49,6 @@ def initial():
 		start = event['start'].get('dateTime', event['start'].get('date'))
 		print(start, event['summary'])
 
-
-def after():
-	credentials = Credentials(
-		None,
-		refresh_token = REFRESH_TOKEN,
-		token_uri = "https://accounts.google.com/o/oauth2/token",
-		client_id = CLIENT_ID,
-		client_secret = CLIENT_SECRET
-	)
-	access_token = credentials.token
-	print("Access token: %s" % access_token) 
-	service = build('calendar', 'v3', credentials = credentials)
-	now = datetime.datetime.utcnow().isoformat() + 'Z' # 'Z' indicates UTC time
-	print('Getting the upcoming 10 events')
-	events_result = service.events().list(calendarId='primary', timeMin=now,
-						maxResults=10, singleEvents=True,
-						orderBy='startTime').execute()
-	events = events_result.get('items', [])
-	if not events:
-		print('No upcoming events found.')
-	for event in events:
-		start = event['start'].get('dateTime', event['start'].get('date'))
-		print(start, event['summary'])
-
-
-def calendar_api():
-	service = build('calendar', 'v3', credentials = credentials)
-	now = datetime.datetime.utcnow().isoformat() + 'Z' # 'Z' indicates UTC time
-	print('Getting the upcoming 10 events')
-	events_result = service.events().list(calendarId='primary', timeMin=now,
-						maxResults=10, singleEvents=True,
-						orderBy='startTime').execute()
-	events = events_result.get('items', [])
-	if not events:
-		print('No upcoming events found.')
-	for event in events:
-		start = event['start'].get('dateTime', event['start'].get('date'))
-		print(start, event['summary'])
 def main():
 	#if (access_token is NULL):
 	initial()
