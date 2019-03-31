@@ -7,6 +7,7 @@ import pickle
 import os.path
 from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
+import dateutil
 
 
 SCOPES = ['https://www.googleapis.com/auth/calendar.readonly']
@@ -111,8 +112,13 @@ def initial(profile):
 	if not events:
 		print('No upcoming events found.')
 	for event in events:
-		start = event['start'].get('dateTime', event['start'].get('date'))
-		print(start, event['summary'])
+		start = event['start']# event['start'].get('date'))
+		if(start.get('date') != None):
+			print(start.get('date'), event['summary'])
+		else:
+			startDate = start.get('dateTime').strip().split('-')
+			startTime = startDate[2].strip().split('T')
+			print("{}-{}-{}: {} {}".format(startDate[0], startDate[1], startTime[0], startTime[1],event['summary']))
 
 def main():
 	profile = input("Enter number of profile\n")
@@ -120,3 +126,4 @@ def main():
 
 if __name__ == '__main__':
     main()
+
