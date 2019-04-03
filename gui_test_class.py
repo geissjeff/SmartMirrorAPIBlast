@@ -1,6 +1,5 @@
 import tkinter as tk
 
-root= tk.Tk()
 
 class GuiTest:
 	def __init__(self):
@@ -23,6 +22,8 @@ class GuiTest:
 			
 
 if __name == "__main__":
+	root= tk.Tk()
+	root.attributes('-fullscreen',True)
 	test = GuiTest()		
 	test.wait_for_input()
 	#root.after(0, wait_for_input)
