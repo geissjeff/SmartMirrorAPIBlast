@@ -173,26 +173,26 @@ def main():
 		#microResponse = serialTest()
 		microResponse = input("Enter a serial command(1-8)")
 		print(microResponse)
-		if(microResponse == 1):
+		if(microResponse == '1'):
 			if(on == 0):
 				on =1
 			else:
 				on = 0
 			print("Device on?:", on, "\n")
-		elif(microResponse == 2):
+		elif(microResponse == '2'):
 			if(enable == 0):
 				enable = 1
 			else:
 				enable = 0
 			profile = 1
 			print("Device enabled?:", enable, "\n")
-		elif(microResponse == 3):
+		elif(microResponse == '3'):
 			profile+=1
 			if(profile>4):
 				profile = 1
-		elif(microResponse == 4):
+		elif(microResponse == '4'):
 			profile-=1
-			if(proifle <1):
+			if(profile <1):
 				profile = 4
 		if(on and enable):
 			print("Weather:\n")
@@ -202,7 +202,7 @@ def main():
 			print("Time:\n")
 			clock()
 			calendarRefresh(profile)
-		print(on, enable)	
+#		print(on, enable)	
 
 if __name__ == '__main__':
     main()
