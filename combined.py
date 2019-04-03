@@ -1,6 +1,6 @@
 from __future__ import print_function
 import requests
-import serial
+#import serial
 import time
 from google_auth_oauthlib.flow import InstalledAppFlow
 from apiclient.discovery import build
@@ -9,7 +9,6 @@ import pickle
 import os.path
 from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
-import dateutil
 
 SCOPES = ['https://www.googleapis.com/auth/calendar.readonly']
 CLIENT_ID ="671143266543-dnper0a5b777rkid7gh655od6130tj60.apps.googleusercontent.com"
@@ -65,70 +64,43 @@ def serialTest():
 				 stopbits=serial.STOPBITS_ONE,
 				 bytesize=serial.EIGHTBITS,timeout=3.0)
 
-	while True:
-		serialport.write("Hello World")
+	while(~rcv):
+	#	serialport.write("Hello World")
 		rcv = serialport.read(8)
-		if(rcv[0] == 1){
-			#turn off LCD
-		}	
-		elif(rcv[1] == 1){
-			#PIR SENSOR, turn on LCD
-		}
 		print(repr(rcv))
 		time.sleep(1)
+	return rcv
 
 def openWeather():
 	weather_API_key = "a0e157b3a341bfe1935ccc52588ae003"
-
 	weather_base_url = "http://api.openweathermap.org/data/2.5/weather?"
-
 	weather_zip_code = "47906"				#input("Enter a Zip code: ")
-
 	weather_Final_zip_url = weather_base_url + "appid=" + weather_API_key + "&zip=" + weather_zip_code
-
 	weather_data = requests.get(weather_Final_zip_url).json()
-
 	temp = weather_data["main"]["temp"]
 	description = weather_data["weather"][0]["description"]
-
 	tempF = 9*(temp - 273)/5 + 32
 	name = weather_data["name"]
-
 	print("Temperature in", name,":", tempF, "degrees F")
 	print("Description in", name,":", description, "\n")
 
 def news():
 	news_base_url = "https://newsapi.org/v2/top-headlines?"
-
 	news_API_Key = "04296e8f713f454990ac3eaf6b88d19f"
-
 	country = "us"#input("Enter country (2 letter lowercase): ")
-
 	news_final_url = news_base_url + "country=" + country + "&apiKey=" + news_API_Key
-
 	response = requests.get(news_final_url).json()
-
 	for i in range(0,5):
 		print(response["articles"][i]["title"])
 
 def clock():
 	clock_base_url = "http://api.timezonedb.com/v2.1/get-time-zone?"
-
 	clock_API_KEY = "Y5DE81BTSLO6"
-
 	formatType = "json"
-
 	by = "zone"
-
-
 	zone = "America/Indiana/Indianapolis"
-
-
 	clock_final_url = clock_base_url + "key=" + clock_API_KEY + "&format=" + formatType + "&by=" + by + "&zone=" + zone
-
 	data = requests.get(clock_final_url).json()
-
-
 	print("The current time in", data["abbreviation"], "is: ", data["formatted"])
 		
 def calendarRefresh(profile):
@@ -195,12 +167,42 @@ def calendarRefresh(profile):
 			print("{}-{}-{}: {} {}".format(startDate[0], startDate[1], startTime[0], startTime[1],event['summary']))
 
 def main():
-	#serialTest()
-	openWeather()
-	news()
-	clock()
-	profile = input("Enter number of profile\n")
-	initial(profile)
+	enable = 0
+	on = 0
+	while(True):
+		#microResponse = serialTest()
+		microResponse = input("Enter a serial command(1-8)")
+		print(microResponse)
+		if(microResponse == 1):
+			if(on == 0):
+				on =1
+			else:
+				on = 0
+			print("Device on?:", on, "\n")
+		elif(microResponse == 2):
+			if(enable == 0):
+				enable = 1
+			else:
+				enable = 0
+			profile = 1
+			print("Device enabled?:", enable, "\n")
+		elif(microResponse == 3):
+			profile+=1
+			if(profile>4):
+				profile = 1
+		elif(microResponse == 4):
+			profile-=1
+			if(proifle <1):
+				profile = 4
+		if(on and enable):
+			print("Weather:\n")
+			openWeather()
+			print("News:\n")
+			news()
+			print("Time:\n")
+			clock()
+			calendarRefresh(profile)
+		print(on, enable)	
 
 if __name__ == '__main__':
     main()
