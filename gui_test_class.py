@@ -1,4 +1,5 @@
 import tkinter as tk
+import combined
 from tkinter import font
 
 root = tk.Tk()
@@ -168,6 +169,11 @@ if __name__ == "__main__":
 	root.attributes('-fullscreen',True)
 	root.configure(background='black')
 	test = GuiTest(0)
+	combinedTemp = combined.calendarRefresh(1)
+	test.changeCalendar(combinedTemp)
+	test.changeTime(combined.clock())
+	test.changeNews(combined.news())
+	test.changeWeather(combined.openWeather())
 	#cal = ["hello", "whats", "up"]
 	#weat = "weat"
 	#test.changeWeather(weat)

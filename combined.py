@@ -83,7 +83,7 @@ def openWeather():
 	name = weather_data["name"]
 	print("Temperature in", name,":", tempF, "degrees F")
 	print("Description in", name,":", description, "\n")
-	returnString = str(tempF) + " " + str(description)
+	returnString = str(round(tempF)) + "F " + str(description)
 	return returnString
 
 def news():
@@ -95,7 +95,11 @@ def news():
 	response = requests.get(news_final_url).json()
 	for i in range(0,5):
 		print(response["articles"][i]["title"])
-		stringReturn.append(response["articles"][i]["title"])
+		tempList = response["articles"][i]["title"].strip().split('-')
+		if(len(tempList[0]) > 60):
+			stringReturn.append(tempList[0][:59] + "-" + tempList[1])
+		else:
+			stringReturn.append(tempList[0] + "-" + tempList[1])
 	return stringReturn #list of strings
 
 def clock():
@@ -109,13 +113,17 @@ def clock():
 	listTime = data["formatted"].strip().split(':')
 	listDate = listTime[0].strip().split(' ')
 	listReturn = list()
+	if(int(listDate[1]) < 12):
+		stringMessage = "Good Morning"
+	elif(int(listDate[1]) < 18):
+		stringMessage = "Good Afternoon"
+	else:
+		stringMessage = "Good Evening"
+	listReturn.append(stringMessage)
 	listReturn.append(listDate[0])
-	listReturn.append(listDate[1])
-	listReturn.append(listTime[1])
+	listReturn.append(listDate[1]+":"+listTime[1])
 	
 	print("The current time in", data["abbreviation"], "is: ", data["formatted"])
-	for i in range(0,3):
-		print(listReturn[i])
 	return listReturn
 		
 def calendarRefresh(profile):
@@ -194,12 +202,12 @@ def calendarRefresh(profile):
 		start = event['start']# event['start'].get('date'))
 		if(start.get('date') != None):
 			print(start.get('date'), event['summary'])
-			returnString += event['summary']
+			returnString = event['summary']
 		else:
 			startDate = start.get('dateTime').strip().split('-')
 			startTime = startDate[2].strip().split('T')
 			print("{}-{}-{}: {} {}".format(startDate[0], startDate[1], startTime[0], startTime[1],event['summary']))
-			returnString += startTime[1] +" "+ event['summary']  #0314:30OK
+			returnString = startTime[1] +" "+ event['summary']  #0314:30OK
 		returnList.append(returnString)
 	return returnList #list of 8 strings
 def main():
