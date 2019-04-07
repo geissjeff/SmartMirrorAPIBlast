@@ -89,14 +89,14 @@ def openWeather():
 def news():
 	news_base_url = "https://newsapi.org/v2/top-headlines?"
 	news_API_Key = "04296e8f713f454990ac3eaf6b88d19f"
-	stringReturn = ""
+	stringReturn = list()
 	country = "us"#input("Enter country (2 letter lowercase): ")
 	news_final_url = news_base_url + "country=" + country + "&apiKey=" + news_API_Key
 	response = requests.get(news_final_url).json()
 	for i in range(0,5):
 		print(response["articles"][i]["title"])
-		stringReturn += response["articles"][i]["title"] + " "
-	return stringReturn
+		stringReturn.append(response["articles"][i]["title"])
+	return stringReturn #list of strings
 
 def clock():
 	clock_base_url = "http://api.timezonedb.com/v2.1/get-time-zone?"
@@ -106,8 +106,17 @@ def clock():
 	zone = "America/Indiana/Indianapolis"
 	clock_final_url = clock_base_url + "key=" + clock_API_KEY + "&format=" + formatType + "&by=" + by + "&zone=" + zone
 	data = requests.get(clock_final_url).json()
+	listTime = data["formatted"].strip().split(':')
+	listDate = listTime[0].strip().split(' ')
+	listReturn = list()
+	listReturn.append(listDate[0])
+	listReturn.append(listDate[1])
+	listReturn.append(listTime[1])
+	
 	print("The current time in", data["abbreviation"], "is: ", data["formatted"])
-	return data["formatted"]
+	for i in range(0,3):
+		print(listReturn[i])
+	return listReturn
 		
 def calendarRefresh(profile):
 	returnString = ""
@@ -178,20 +187,21 @@ def calendarRefresh(profile):
 						maxResults=10, singleEvents=True,
 						orderBy='startTime').execute()
 	events = events_result.get('items', [])
+	returnList = list()
 	if not events:
 		returnString = 'No upcoming events found.\n'
 	for event in events:
 		start = event['start']# event['start'].get('date'))
 		if(start.get('date') != None):
 			print(start.get('date'), event['summary'])
-			returnString += event['summary'] + '-'
+			returnString += event['summary']
 		else:
 			startDate = start.get('dateTime').strip().split('-')
 			startTime = startDate[2].strip().split('T')
 			print("{}-{}-{}: {} {}".format(startDate[0], startDate[1], startTime[0], startTime[1],event['summary']))
-			returnString += startTime[1] +" "+ event['summary'] + '-'  #0314:30OK
-		print(returnString)
-	return returnString
+			returnString += startTime[1] +" "+ event['summary']  #0314:30OK
+		returnList.append(returnString)
+	return returnList #list of 8 strings
 def main():
 	profile = 1
 	while(True):
