@@ -7,7 +7,6 @@ import pickle
 import os.path
 from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
-import dateutil
 
 
 SCOPES = ['https://www.googleapis.com/auth/calendar.readonly']
@@ -20,7 +19,7 @@ CLIENT_SECRET_2 ="5xTTaVVr3fY_jGJrJCtx4IDT"
 CLIENT_SECRET_3 ="CXEU5DXQqllYBmm3C6-4zueo"
 CLIENT_SECRET_4 ="Tl-BUygEx8THB8sHtkK3gtgn"
 REFRESH_TOKEN = "1/HOYF-y6yl2FOSkxME3m0POyp0mmvEbKBc5H_1DMCGxU"
-credentials = None
+#credentials = None
 client_config = {
     "installed": {
         "auth_uri": "https://accounts.google.com/o/oauth2/auth",
@@ -58,7 +57,7 @@ client_config_4 = {
     }
 }
 def initial(profile):
-	if(profile == 1):
+	if(profile == '1'):
 		if os.path.exists('token.pickle'):
 			with open('token.pickle', 'rb') as token:
 				credentials=pickle.load(token)
@@ -68,8 +67,8 @@ def initial(profile):
 			access_token = credentials.token
 			refresh_token = credentials.refresh_token
 			with open('token.pickle', 'wb') as token:
-			    pickle.dump(credentials, token)
-	elif(profile == 2):
+				pickle.dump(credentials, token)
+	elif(profile == '2'):
 		if os.path.exists('token2.pickle'):
 			with open('token2.pickle', 'rb') as token:
 				credentials=pickle.load(token)
@@ -79,8 +78,8 @@ def initial(profile):
 			access_token = credentials.token
 			refresh_token = credentials.refresh_token
 			with open('token2.pickle', 'wb') as token:
-			    pickle.dump(credentials, token)
-	elif(profile == 3):
+				pickle.dump(credentials, token)
+	elif(profile == '3'):
 		if os.path.exists('token3.pickle'):
 			with open('token3.pickle', 'rb') as token:
 				credentials=pickle.load(token)
@@ -90,8 +89,8 @@ def initial(profile):
 			access_token = credentials.token
 			refresh_token = credentials.refresh_token
 			with open('token3.pickle', 'wb') as token:
-			    pickle.dump(credentials, token)
-	elif(profile == 4):
+				pickle.dump(credentials, token)
+	elif(profile == '4'):
 		if os.path.exists('token4.pickle'):
 			with open('token4.pickle', 'rb') as token:
 				credentials=pickle.load(token)

@@ -83,15 +83,20 @@ def openWeather():
 	name = weather_data["name"]
 	print("Temperature in", name,":", tempF, "degrees F")
 	print("Description in", name,":", description, "\n")
+	returnString = str(tempF) + " " + str(description)
+	return returnString
 
 def news():
 	news_base_url = "https://newsapi.org/v2/top-headlines?"
 	news_API_Key = "04296e8f713f454990ac3eaf6b88d19f"
+	stringReturn = list()
 	country = "us"#input("Enter country (2 letter lowercase): ")
 	news_final_url = news_base_url + "country=" + country + "&apiKey=" + news_API_Key
 	response = requests.get(news_final_url).json()
 	for i in range(0,5):
 		print(response["articles"][i]["title"])
+		stringReturn.append(response["articles"][i]["title"])
+	return stringReturn #list of strings
 
 def clock():
 	clock_base_url = "http://api.timezonedb.com/v2.1/get-time-zone?"
@@ -101,9 +106,20 @@ def clock():
 	zone = "America/Indiana/Indianapolis"
 	clock_final_url = clock_base_url + "key=" + clock_API_KEY + "&format=" + formatType + "&by=" + by + "&zone=" + zone
 	data = requests.get(clock_final_url).json()
+	listTime = data["formatted"].strip().split(':')
+	listDate = listTime[0].strip().split(' ')
+	listReturn = list()
+	listReturn.append(listDate[0])
+	listReturn.append(listDate[1])
+	listReturn.append(listTime[1])
+	
 	print("The current time in", data["abbreviation"], "is: ", data["formatted"])
+	for i in range(0,3):
+		print(listReturn[i])
+	return listReturn
 		
 def calendarRefresh(profile):
+	returnString = ""
 	if(profile == 1):
 		if os.path.exists('token.pickle'):
 			with open('token.pickle', 'rb') as token:
@@ -150,59 +166,65 @@ def calendarRefresh(profile):
 			    pickle.dump(credentials, token)
 	service = build('calendar', 'v3', credentials = credentials)
 	now = datetime.datetime.utcnow().isoformat() +'Z'# 'Z' indicates UTC time
+	#end = now.replace(hour=23, minute=59, second=59, microsecond=999999)
+	end = list(now)
+	for i in range(len(end)):
+		if(end[i-1] == 'T'):
+			end[i] = '2'
+		if(end[i-2] == 'T'):
+			end[i] = '3'
+		if(end[i-4] == 'T'):
+			end[i] = '5'
+		if(end[i-5] == 'T'):
+			end[i] = '9'
+		if(end[i-7] == 'T'):
+			end[i] = '5'
+		if(end[i-8] == 'T'):
+			end[i] = '9'
+	endTime= "".join(end)
 	print('Getting the upcoming 10 events')
-	events_result = service.events().list(calendarId='primary', timeMin=now,
+	events_result = service.events().list(calendarId='primary', timeMin=now, timeMax = endTime,
 						maxResults=10, singleEvents=True,
 						orderBy='startTime').execute()
 	events = events_result.get('items', [])
+	returnList = list()
 	if not events:
-		print('No upcoming events found.')
+		returnString = 'No upcoming events found.\n'
 	for event in events:
 		start = event['start']# event['start'].get('date'))
 		if(start.get('date') != None):
 			print(start.get('date'), event['summary'])
+			returnString += event['summary']
 		else:
 			startDate = start.get('dateTime').strip().split('-')
 			startTime = startDate[2].strip().split('T')
 			print("{}-{}-{}: {} {}".format(startDate[0], startDate[1], startTime[0], startTime[1],event['summary']))
-
+			returnString += startTime[1] +" "+ event['summary']  #0314:30OK
+		returnList.append(returnString)
+	return returnList #list of 8 strings
 def main():
-	enable = 0
-	on = 0
+	profile = 1
 	while(True):
-		#microResponse = serialTest()
-		microResponse = input("Enter a serial command(1-8)")
-		print(microResponse)
-		if(microResponse == 1):
-			if(on == 0):
-				on =1
-			else:
-				on = 0
-			print("Device on?:", on, "\n")
-		elif(microResponse == 2):
-			if(enable == 0):
-				enable = 1
-			else:
-				enable = 0
-			profile = 1
-			print("Device enabled?:", enable, "\n")
-		elif(microResponse == 3):
-			profile+=1
-			if(profile>4):
-				profile = 1
-		elif(microResponse == 4):
-			profile-=1
-			if(proifle <1):
-				profile = 4
-		if(on and enable):
-			print("Weather:\n")
-			openWeather()
-			print("News:\n")
-			news()
-			print("Time:\n")
-			clock()
-			calendarRefresh(profile)
-		print(on, enable)	
+		#microResponse = list(serialTest())
+		microResponse = list(input("Enter a serial command(6 bits)"))
+	#	print(microResponse)
+		if(microResponse[0] == '1'):
+			if(microResponse[1] == '1'):
+				if(microResponse[2] == '1'):
+					profile+=1
+					if(profile>4):
+						profile = 1
+				elif(microResponse[3] == '1'):
+					profile-=1
+					if(profile <1):
+						profile = 4
+				print("Weather:\n")
+				openWeather()
+				print("News:\n")
+				news()
+				print("Time:\n")
+				clock()
+				calendarRefresh(profile)
 
 if __name__ == '__main__':
     main()
