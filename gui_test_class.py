@@ -27,7 +27,7 @@ class GuiTest:
 		self.v_time3.set("8:31 am")
 		
 		#Weather Variables
-		self.label_weathertitle = tk.Label(root, text="Weather",bg='#000000',fg=brightness[brightVal],font=self.titlefont)
+		self.label_weathertitle = tk.Label(root, text="\nWeather",bg='#000000',fg=brightness[brightVal],font=self.titlefont)
 		self.label_weathertitle.pack(anchor="w")
 		self.v_weather1 = tk.StringVar()
 		self.label_weather1 = tk.Label(root, textvariable=self.v_weather1,bg='#000000',fg=brightness[brightVal],font=('Helvetica', '16'))
@@ -36,7 +36,7 @@ class GuiTest:
 
 
 		#News
-		self.label_newstitle = tk.Label(root, text="Headlines",bg='#000000',fg=brightness[brightVal],font=self.titlefont)
+		self.label_newstitle = tk.Label(root, text="\nHeadlines",bg='#000000',fg=brightness[brightVal],font=self.titlefont)
 		self.label_newstitle.pack(anchor="w")
 		self.v_news1 = tk.StringVar()
 		self.v_news2 = tk.StringVar()
@@ -61,7 +61,7 @@ class GuiTest:
 
 		
 		#Calendar
-		self.label_caltitle = tk.Label(root, text="Upcoming Events",bg='#000000',fg=brightness[brightVal],font=self.titlefont)
+		self.label_caltitle = tk.Label(root, text="\nToday's Events",bg='#000000',fg=brightness[brightVal],font=self.titlefont)
 		self.label_caltitle.pack(anchor="w")
 		self.v_calendar1 = tk.StringVar()
 		self.label_calendar1 = tk.Label(root, textvariable=self.v_calendar1,bg='#000000',fg=brightness[brightVal],font=('Helvetica', '14'))
@@ -96,6 +96,7 @@ class GuiTest:
 		self.v_calendar7.set("8:30 Brush Teeth7")
 		self.v_calendar8.set("8:30 Brush Teeth8")
 		#self.label_calender8.pack_forget()
+		self.changeVar = 0
 
 	def changeTime(self, time):
 		self.v_time1.set(time[0])
@@ -190,13 +191,15 @@ class GuiTest:
 
 	def looper(self):
 		serialVar = ""
-		i = 0
-		while(len(serialVar) != 4):
-			serialVar = combined.serialTest()
-			if(i==4):
+		#while(len(serialVar) != 4):
+		serialVar = combined.serialTest()
+		print(serialVar)
+		if(len(serialVar) != 4):
+			if(self.changeVar %2 == 0):
 				serialVar = "1120"
-				i = 0
-			i+=1
+			else:
+				serialVar = "1116"
+			self.changeVar+=1
 		combinedCal = combined.calendarRefresh(int(serialVar[2]))
 		self.changeCalendar(combinedCal)
 		self.changeTime(combined.clock())

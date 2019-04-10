@@ -79,8 +79,8 @@ def openWeather():
 	description = weather_data["weather"][0]["description"]
 	tempF = 9*(temp - 273)/5 + 32
 	name = weather_data["name"]
-	print("Temperature in", name,":", tempF, "degrees F")
-	print("Description in", name,":", description, "\n")
+	#print("Temperature in", name,":", tempF, "degrees F")
+	#print("Description in", name,":", description, "\n")
 	returnString = str(round(tempF)) + "F " + str(description)
 	return returnString
 
@@ -92,12 +92,18 @@ def news():
 	news_final_url = news_base_url + "country=" + country + "&apiKey=" + news_API_Key
 	response = requests.get(news_final_url).json()
 	for i in range(0,5):
-		print(response["articles"][i]["title"])
+		#print(response["articles"][i]["title"])
 		tempList = response["articles"][i]["title"].strip().split('-')
-		if(len(tempList[0]) > 60):
-			stringReturn.append(tempList[0][:59] + "-" + tempList[1])
+		if(len(tempList[1]) > 17):
+			if(len(tempList[0]) > 45):
+				stringReturn.append(tempList[0][:44] + "-" + tempList[1])
+			else:
+				stringReturn.append(tempList[0] + "-" + tempList[1])
 		else:
-			stringReturn.append(tempList[0] + "-" + tempList[1])
+			if(len(tempList[0]) > 60):
+				stringReturn.append(tempList[0][:59] + "-" + tempList[1])
+			else:
+				stringReturn.append(tempList[0] + "-" + tempList[1])
 	return stringReturn #list of strings
 
 def clock():
@@ -121,7 +127,7 @@ def clock():
 	listReturn.append(listDate[0])
 	listReturn.append(listDate[1]+":"+listTime[1])
 	
-	print("The current time in", data["abbreviation"], "is: ", data["formatted"])
+	#print("The current time in", data["abbreviation"], "is: ", data["formatted"])
 	return listReturn
 		
 def calendarRefresh(profile):
@@ -188,7 +194,7 @@ def calendarRefresh(profile):
 		if(end[i-8] == 'T'):
 			end[i] = '9'
 	endTime= "".join(end)
-	print('Getting the upcoming 10 events')
+	#print('Getting the upcoming 10 events')
 	events_result = service.events().list(calendarId='primary', timeMin=now, timeMax = endTime,
 						maxResults=10, singleEvents=True,
 						orderBy='startTime').execute()
@@ -199,12 +205,12 @@ def calendarRefresh(profile):
 	for event in events:
 		start = event['start']# event['start'].get('date'))
 		if(start.get('date') != None):
-			print(start.get('date'), event['summary'])
-			returnString = event['summary']
+			#print(start.get('date'), event['summary'])
+			returnString = "All Day:   " + event['summary']
 		else:
 			startDate = start.get('dateTime').strip().split('-')
 			startTime = startDate[2].strip().split('T')
-			print("{}-{}-{}: {} {}".format(startDate[0], startDate[1], startTime[0], startTime[1],event['summary']))
+			#print("{}-{}-{}: {} {}".format(startDate[0], startDate[1], startTime[0], startTime[1],event['summary']))
 			returnString = startTime[1] +" "+ event['summary']  #0314:30OK
 		returnList.append(returnString)
 	return returnList #list of 8 strings
