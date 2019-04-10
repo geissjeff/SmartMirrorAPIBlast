@@ -2,6 +2,9 @@ import tkinter as tk
 import time
 import combined
 from tkinter import font
+import sys, select
+from threading import Timer
+import signal
 
 root = tk.Tk()
 brightness = ['#ffffff', '#d9d9d9', '#cccccc', '#b3b3b3', '#999999', '#878787','#696969','#4f4f4f','#3b3b3b','#000000'] 
@@ -187,23 +190,26 @@ class GuiTest:
 
 	def looper(self):
 		serialVar = ""
-		#while(len(serialVar) != 4):
-		serialVar = combined.serialTest()
-		serialVar = "1120"
+		i = 0
+		while(len(serialVar) != 4):
+			serialVar = combined.serialTest()
+			if(i==4):
+				serialVar = "1120"
+				i = 0
+			i+=1
 		combinedCal = combined.calendarRefresh(int(serialVar[2]))
 		self.changeCalendar(combinedCal)
 		self.changeTime(combined.clock())
 		self.changeNews(combined.news())
 		self.changeWeather(combined.openWeather())
 		self.changeBrightness(int(serialVar[3]))
-		#time.sleep(10)
-		user_inp = input("Try This")
-		root.after(500, self.looper())	
+		root.after(5000, self.looper)
+def interrupted(signum, frame):
+	print("interrupted")	
 if __name__ == "__main__":
 	root.attributes('-fullscreen',True)
 	root.configure(background='black')
 	test = GuiTest(0)
-#	while(True):
-	root.after(0,test.looper())
+	root.after(0,test.looper)
 	root.mainloop()	
 
