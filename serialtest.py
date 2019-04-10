@@ -7,7 +7,6 @@ serialport = serial.Serial(port = "/dev/ttyAMA0",
 				 bytesize=serial.EIGHTBITS,timeout=3.0)
 
 while True:
-	serialport.write("Hello World")
 	rcv = serialport.read(8)
 	print(repr(rcv))
 	time.sleep(1)

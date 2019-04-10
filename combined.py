@@ -1,6 +1,6 @@
 from __future__ import print_function
 import requests
-#import serial
+import serial
 import time
 from google_auth_oauthlib.flow import InstalledAppFlow
 from apiclient.discovery import build
@@ -64,11 +64,9 @@ def serialTest():
 				 stopbits=serial.STOPBITS_ONE,
 				 bytesize=serial.EIGHTBITS,timeout=3.0)
 
-	while(~rcv):
-	#	serialport.write("Hello World")
-		rcv = serialport.read(8)
-		print(repr(rcv))
-		time.sleep(1)
+	rcv = serialport.read(8)
+	print(repr(rcv))
+	time.sleep(1)
 	return rcv
 
 def openWeather():
@@ -218,14 +216,8 @@ def main():
 	#	print(microResponse)
 		if(microResponse[0] == '1'):
 			if(microResponse[1] == '1'):
-				if(microResponse[2] == '1'):
-					profile+=1
-					if(profile>4):
-						profile = 1
-				elif(microResponse[3] == '1'):
-					profile-=1
-					if(profile <1):
-						profile = 4
+				profile = int(microResponse[2])#0-3
+				brightness = int(microResponse[3]) #0-7
 				print("Weather:\n")
 				openWeather()
 				print("News:\n")
