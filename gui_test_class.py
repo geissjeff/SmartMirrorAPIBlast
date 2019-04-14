@@ -192,8 +192,8 @@ class GuiTest:
 	def looper(self):
 		serialVar = ""
 		#while(len(serialVar) != 4):
-		serialVar = combined.serialTest()
-		print(serialVar)
+#		serialVar = combined.serialTest()
+#		print(serialVar)
 		if(len(serialVar) != 4):
 			if(self.changeVar %2 == 0):
 				serialVar = "1120"
