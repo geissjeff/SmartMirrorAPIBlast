@@ -8,6 +8,7 @@ import signal
 
 root = tk.Tk()
 brightness = ['#ffffff', '#d9d9d9', '#cccccc', '#b3b3b3', '#999999', '#878787','#696969','#4f4f4f','#3b3b3b','#000000'] 
+prevSerial = ['A', '01', '01', '01', '01', '05']
 class GuiTest:
 	def __init__(self,brightVal):
 		self.titlefont = font.Font(family="Helvetica", size=20, underline = True)
@@ -189,30 +190,35 @@ class GuiTest:
 			self.changeString(user_input)
 			root.after(0, self.wait_for_input())
 
-	def looper(self):
-		serialVar = ""
+	def looper(self, prevSerial):
+		#serialVar = ""
 		#while(len(serialVar) != 4):
-#		serialVar = combined.serialTest()
-#		print(serialVar)
-		if(len(serialVar) != 4):
-			if(self.changeVar %2 == 0):
-				serialVar = "1120"
-			else:
-				serialVar = "1116"
-			self.changeVar+=1
-		combinedCal = combined.calendarRefresh(int(serialVar[2]))
-		self.changeCalendar(combinedCal)
-		self.changeTime(combined.clock())
-		self.changeNews(combined.news())
-		self.changeWeather(combined.openWeather())
-		self.changeBrightness(int(serialVar[3]))
-		root.after(5000, self.looper)
+		serialVar = combined.serialTest(prevSerial)
+		prevSerial = serialVar
+		print(serialVar)
+#		if(len(serialVar) != 4):
+#			if(self.changeVar %2 == 0):
+#				serialVar = "41120"
+#			else:
+#				serialVar = "41116"
+#			self.changeVar+=1
+		if(serialVar[1] == '01' or serialVar[2] == '01'):
+			self.changeBrightness(9)
+		else:
+			combinedCal = combined.calendarRefresh(int(serialVar[3]))
+			self.changeCalendar(combinedCal)
+			self.changeTime(combined.clock())
+			self.changeNews(combined.news())
+			self.changeWeather(combined.openWeather())
+			self.changeBrightness(int(serialVar[4]))
+		root.after(5000, self.looper, prevSerial)
 def interrupted(signum, frame):
 	print("interrupted")	
 if __name__ == "__main__":
 	root.attributes('-fullscreen',True)
 	root.configure(background='black')
+	prevSerial = ['A', '01', '01', '01', '01', '05']
 	test = GuiTest(0)
-	root.after(0,test.looper)
+	root.after(0,test.looper, prevSerial)
 	root.mainloop()	
 

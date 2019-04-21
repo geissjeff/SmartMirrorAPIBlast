@@ -57,17 +57,61 @@ client_config_4 = {
         "client_secret":CLIENT_SECRET_4
     }
 }
+serialport = serial.Serial(port = "/dev/ttyAMA0",
+		baudrate=9600,parity=serial.PARITY_NONE,
+		stopbits=serial.STOPBITS_ONE,
+		bytesize=serial.EIGHTBITS,timeout=3.0)
 
-def serialTest():
-	serialport = serial.Serial(port = "/dev/ttyAMA0",
-				 baudrate=9600,parity=serial.PARITY_NONE,
-				 stopbits=serial.STOPBITS_ONE,
-				 bytesize=serial.EIGHTBITS,timeout=3.0)
+def serialTest(previous):
+#	while(True):
+	inputParameters = list()	
+#	serialport.reset_input_buffer()
+	serialport.flushInput()
+	rcv = serialport.read(6)
+	print(isinstance(rcv, bytes))
+#	stringConverted = rcv.decode("ISO 8859-1")
+#	intConverted = int.from_bytes(rcv, byteorder="big")
+#	stringConverted = (repr(rcv)).decode()
+	listBytes=repr(rcv).strip().split('\\x')
+	i = 0
+	while(i < len(listBytes) and listBytes[i] != "'A"):
+		i+=1
+	print(listBytes)
+	print(i)
+	j = 0
+	for j in range(len(listBytes)):
+		if(i >= len(listBytes)):
+			i = 0
+		if(listBytes[i] != "b'"):
+			inputParameters.append((listBytes[i]))
+		i+=1
+	if(len(inputParameters) == 6):
+		for j in range(len(inputParameters)):
+			if(len(inputParameters[j]) == 3):
+				inputParameters[j] = inputParameters[j][0:2]
+			print(inputParameters[j])
+		#Checks to make sure that each parameter falls into one of the valid parameters
 
-	rcv = serialport.read(8)
-	print(repr(rcv))
-	time.sleep(1)
-	return rcv
+		if(inputParameters[0] != "b'"):
+		#	return serialTest()
+			print("Error: 0")
+		if(inputParameters[1] != '01' and inputParameters[1] != '02'):
+			print("Error: 1")
+		if(inputParameters[2] != '01' and inputParameters[2] != '02'):
+			print("Error: 2")
+		if((inputParameters[3] != '01' and inputParameters[3] != '02' 
+		 and inputParameters[3] != '03' and inputParameters[3] != '04')):
+			print("Error: 3")
+
+		if((inputParameters[4] != '01' and inputParameters[4] != '02'
+		and inputParameters[4] != '03' and inputParameters[4] != '04'
+		and inputParameters[4] != '05' and inputParameters[4] != '06'
+		and inputParameters[4] != '07' and inputParameters[4] != '08'
+		and inputParameters[4] != '09' )):
+			print("Error: 4")
+		return inputParameters
+	else:
+		return previous
 
 def openWeather():
 	weather_API_key = "a0e157b3a341bfe1935ccc52588ae003"
@@ -217,13 +261,13 @@ def calendarRefresh(profile):
 def main():
 	profile = 1
 	while(True):
-		#microResponse = list(serialTest())
-		microResponse = list(input("Enter a serial command(6 bits)"))
+		microResponse = serialTest()
+		#microResponse = list(input("Enter a serial command(6 bits)"))
 	#	print(microResponse)
-		if(microResponse[0] == '1'):
-			if(microResponse[1] == '1'):
-				profile = int(microResponse[2])#0-3
-				brightness = int(microResponse[3]) #0-7
+		if(microResponse[1] == '02'):
+			if(microResponse[2] == '02'):
+				profile = int(microResponse[3])#0-3
+				brightness = int(microResponse[4]) #0-7
 				print("Weather:\n")
 				openWeather()
 				print("News:\n")
